@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { createPost } from '../services/postService';
 import { createAlert } from '../services/alertService';
 import { createPoll } from '../services/pollService';
-import './AdminDashboard.css';
 import MiniPostCard from '../components/posts/MiniPostCard';
 import Tabs from '../components/common/Tabs';
 import ManagePosts from '../components/admin/ManagePosts';
@@ -100,14 +99,6 @@ function AdminDashboard() {
         setFotoPreview(objectUrl);
         return () => URL.revokeObjectURL(objectUrl);
     }, [foto]);
-
-    useEffect(() => {
-        const originalColor = document.body.style.backgroundColor;
-        document.body.style.backgroundColor = '#444444'; // O teu fundo cinza-escuro
-        return () => {
-            document.body.style.backgroundColor = originalColor || '#f4f4f4';
-        }
-    }, []);
 
     // --- As Funções (handleFotoChange, handleSubmit) ---
     const handleFotoChange = (e) => {
