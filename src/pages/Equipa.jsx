@@ -10,11 +10,6 @@ const coach = {
 
 const titulares = [
     {
-        nome: "José Cruz",
-        descricao: "Cebolas, os comentários fazem te querer chorar.",
-        imagem: "/Cruz.JPEG"
-    },
-    {
         nome: "Guilherme Silva",
         descricao: "Comentador de rara precisão, raramente acerta uma.",
         imagem: "/GuiBoss.jpg"
@@ -37,6 +32,11 @@ const staff = [
         nome: "Joana Toscano",
         descricao: "Política, fala muito e não faz nada.",
         imagem: "/Joana.jpg"
+    },
+    {
+        nome: "José Cruz",
+        descricao: "Trolha, faz de tudo um pouco.",
+        imagem: "/Cruz.JPEG"
     },
     // ... (Adicionar outros membros do staff)
 ];
@@ -87,7 +87,7 @@ function Equipa() {
 
             {/* --- Secção do Staff --- */}
             <section className="team-section">
-                <h2 className="section-title">Staff</h2>
+                <h2 className="section-title">Equipa Técnica</h2>
                 <div className="team-grid">
                     {staff.map(membro => (
                         <MemberCard

@@ -5,8 +5,8 @@ function MiniNavbar() {
     return (
         <div className="mini-navbar">
       <span>
-        <strong className="grey-text">O vosso 5 inicial -</strong>
-          {" "}José Cruz, Guilherme Silva, <strong className="grey-text">Rodrigo Almeida</strong>, Rodrigo Afonso, Ricardo Ramalho
+        <strong className="grey-text">O Quarteto Fantástico -</strong>
+          {" "}Guilherme Silva, Rodrigo Afonso, Ricardo Ramalho, <strong className="grey-text">Rodrigo Almeida</strong>
       </span>
         </div>
     );
