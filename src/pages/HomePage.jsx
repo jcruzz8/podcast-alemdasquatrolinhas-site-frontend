@@ -9,6 +9,8 @@ import PostsCarousel from '../components/posts/PostsCarousel';
 import SondagemCard from '../components/common/SondagemCard';
 import { useAuth } from '../context/AuthContext'; // Para saber quem está logado
 import { toggleAlertLike } from '../services/alertService'; // A função de dar like
+import { fetchSiteSettings } from '../services/settingsService';
+import { toggleSpotifyLike } from '../services/settingsService';
 import '../components/posts/PostCard.css'; // Para o estilo do botão de like
 
 function HomePage() {
@@ -18,46 +20,67 @@ function HomePage() {
     const [activePoll, setActivePoll] = useState(null);
     const [loading, setLoading] = useState(true);
     const { isLoggedIn, user } = useAuth(); // Acede aos dados de login
+    const [settings, setSettings] = useState(null);
 
     // 3. 'useEffect' para carregar tudo quando a página abre
     useEffect(() => {
         const loadHomePageData = async () => {
             setLoading(true);
             try {
-                // 4. Pede os 3 tipos de dados ao mesmo tempo (em paralelo)
-                const [alertsData, postsData, pollsData] = await Promise.all([
+                const [
+                    alertsResult,
+                    postsResult,
+                    pollsResult,
+                    settingsResult
+                ] = await Promise.allSettled([
                     fetchPublicAlerts(),
                     fetchPublicPosts(),
-                    fetchPublicPolls()
+                    fetchPublicPolls(),
+                    fetchSiteSettings()
                 ]);
 
                 // --- Lógica de Filtragem ---
 
                 // Alerta Mais Recente:
-                // (Os alertas já vêm ordenados por data, por isso pegamos no primeiro)
-                if (alertsData.length > 0) {
-                    setLatestAlert(alertsData[0]);
+                if (alertsResult.status === 'fulfilled' && alertsResult.value.length > 0) {
+                    setLatestAlert(alertsResult.value[0]);
+                } else if (alertsResult.status === 'rejected') {
+                    console.error("Falha ao carregar Alertas:", alertsResult.reason);
                 }
 
                 // 4 Posts Mais Recentes:
-                // (Os posts já vêm ordenados por data, por isso pegamos nos 4 primeiros)
-                setRecentPosts(postsData.slice(0, 4));
+                if (postsResult.status === 'fulfilled') {
+                    setRecentPosts(postsResult.value.slice(0, 4));
+                } else if (postsResult.status === 'rejected') {
+                    console.error("Falha ao carregar Posts:", postsResult.reason);
+                }
 
                 // Sondagem "em decorrer":
-                // (Procura a primeira "Ativa" ou "Eterna". Já vêm por data)
-                const now = new Date();
-                const ongoingPoll = pollsData.find(poll => {
-                    const prazo = poll.prazo ? new Date(poll.prazo) : null;
-                    if (!prazo) return true; // Se for "Eterna", está ativa
-                    if (prazo && now < prazo) return true; // Se for "Ativa", está ativa
-                    return false; // Se for "Antiga", ignora
-                });
-                setActivePoll(ongoingPoll || null); // Define a primeira que encontrar
+                if (pollsResult.status === 'fulfilled') {
+                    const now = new Date();
+                    const ongoingPoll = pollsResult.value.find(poll => {
+                        const prazo = poll.prazo ? new Date(poll.prazo) : null;
+                        if (!prazo) return true; // Se for "Eterna", está ativa
+                        if (prazo && now < prazo) return true; // Se for "Ativa", está ativa
+                        return false; // Se for "Antiga", ignora
+                    });
+                    setActivePoll(ongoingPoll || null);
+                } else if (pollsResult.status === 'rejected') {
+                    console.error("Falha ao carregar Sondagens:", pollsResult.reason);
+                }
+
+                // Settings do Spotify:
+                if (settingsResult.status === 'fulfilled') {
+                    setSettings(settingsResult.value);
+                } else if (settingsResult.status === 'rejected') {
+                    console.error("Falha ao carregar Settings:", settingsResult.reason);
+                }
 
             } catch (error) {
-                console.error("Erro ao carregar dados da Homepage:", error);
+                // Este 'catch' é para erros inesperados
+                console.error("Erro geral ao carregar Homepage:", error);
             } finally {
-                setLoading(false); // Terminou de carregar
+                setLoading(false); // Corre sempre
             }
         };
 
@@ -79,11 +102,48 @@ function HomePage() {
         }
     };
 
+    const handleSpotifyLike = async () => {
+        if (!isLoggedIn) return; // Segurança
+
+        const updatedSettings = await toggleSpotifyLike();
+
+        if (updatedSettings) {
+            // Atualiza o estado das settings instantaneamente
+            setSettings(updatedSettings);
+        }
+    };
+
     // 5. O "esqueleto" da tua nova Homepage
     return (
         <div style={{ padding: '2rem', maxWidth: '1000px', margin: '0 auto' }}>
 
             {loading && <p>A carregar...</p>}
+
+            {/* ---- Bloco do Spotify ---- */}
+            {!loading && settings && settings.spotifyIframe && (
+                <section style={{ marginBottom: '2rem', textAlign: 'center' }}>
+
+                    <h2 style={{ fontSize: '1.5rem', color: '#000' }}>{settings.spotifyTitle}</h2>
+
+                    {/* AVISO DE SEGURANÇA:
+                      Usamos 'dangerouslySetInnerHTML' porque o Spotify nos dá HTML (um <iframe>).
+                      Isto é seguro porque SÓ NÓS (Admins) é que controlamos este código.
+                    */}
+                    <div
+                        dangerouslySetInnerHTML={{ __html: settings.spotifyIframe }}
+                        className="spotify-embed-container" // Pode usar esta classe para estilizar (ex: margin-top)
+                    />
+                    <div className="post-stats" style={{ marginTop: '1rem', textAlign: 'left', paddingLeft: '1rem' }}>
+                        <button
+                            onClick={handleSpotifyLike}
+                            disabled={!isLoggedIn}
+                            className={`like-button ${settings.likes?.includes(user?._id) ? 'liked' : ''} ${!isLoggedIn ? 'disabled' : ''}`}
+                        >
+                            <span></span> {settings.likes?.length || 0} Likes
+                        </button>
+                    </div>
+                </section>
+            )}
 
             {/* ---- 1. Bloco do Alerta Mais Recente ---- */}
             {!loading && latestAlert && (

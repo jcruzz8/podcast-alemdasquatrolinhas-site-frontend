@@ -1,25 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import { fetchPublicAlerts, toggleAlertLike } from '../services/alertService';
 import { useAuth } from '../context/AuthContext';
+import { fetchSiteSettings } from '../services/settingsService';
+import { toggleSpotifyLike } from '../services/settingsService';
 import '../components/posts/PostCard.css'; // reusa o CSS do botão de like
 
 function AlertasPage() {
     // 1. Onde vamos guardar os alertas
     const [alerts, setAlerts] = useState([]);
+    const [settings, setSettings] = useState(null);
     const [loading, setLoading] = useState(true);
 
     const { isLoggedIn, user } = useAuth();
 
     // 2. O 'useEffect' corre quando a página carrega
     useEffect(() => {
-        const getAlerts = async () => {
+        const getPageData = async () => {
             setLoading(true);
-            const alertsData = await fetchPublicAlerts();
-            setAlerts(alertsData);
-            setLoading(false);
+            try {
+                // Pedimos os dois em "paralelo"
+                const alertsPromise = fetchPublicAlerts();
+                const settingsPromise = fetchSiteSettings();
+
+                // Esperamos que ambos terminem
+                const alertsData = await alertsPromise;
+                const settingsData = await settingsPromise;
+
+                // Guardamos os dados (com um "fallback" para os alertas)
+                setAlerts(alertsData || []);
+                setSettings(settingsData);
+
+            } catch (error) {
+                // Se algo falhar, registamos o erro
+                console.error("Erro ao carregar dados da Página de Alertas:", error);
+            } finally {
+                // O 'finally' GARANTE que isto corre, mesmo que haja um erro
+                setLoading(false);
+            }
         };
 
-        getAlerts();
+        getPageData();
     }, []); // [] = Corre só uma vez
 
     // 3. ---- FUNÇÃO DE LIKE ----
@@ -38,12 +58,40 @@ function AlertasPage() {
         }
     };
 
+    const handleSpotifyLike = async () => {
+        if (!isLoggedIn) return;
+
+        const updatedSettings = await toggleSpotifyLike();
+
+        if (updatedSettings) {
+            setSettings(updatedSettings);
+        }
+    };
+
     // 3. A estrutura (JSX) da página
     return (
         <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
             <h1>Alertas de Episódios</h1>
 
             {loading && <p>A carregar alertas...</p>}
+
+            {!loading && settings && settings.spotifyIframe && (
+                <section style={{ marginBottom: '2rem', textAlign: 'center' }}>
+                    <h2 style={{ fontSize: '1.5rem', color: '#000' }}>{settings.spotifyTitle}</h2>
+                    <div
+                        dangerouslySetInnerHTML={{ __html: settings.spotifyIframe }}
+                    />
+                    <div className="post-stats" style={{ marginTop: '1rem', textAlign: 'left', paddingLeft: '1rem' }}>
+                        <button
+                            onClick={handleSpotifyLike}
+                            disabled={!isLoggedIn}
+                            className={`like-button ${settings.likes?.includes(user?._id) ? 'liked' : ''} ${!isLoggedIn ? 'disabled' : ''}`}
+                        >
+                            <span></span> {settings.likes?.length || 0} Likes
+                        </button>
+                    </div>
+                </section>
+            )}
 
             {!loading && alerts.length === 0 && <p>Não há alertas de momento.</p>}
 
@@ -58,7 +106,7 @@ function AlertasPage() {
                             <div
                                 key={alert._id}
                                 style={{
-                                    backgroundColor: '#333', // <-- REQUISITO: Fundo cinzento-escuro
+                                    backgroundColor: '#333', // Fundo cinzento-escuro
                                     color: '#fff', // <-- Letras brancas
                                     border: '1px solid #444',
                                     padding: '1.5rem',
@@ -68,16 +116,15 @@ function AlertasPage() {
                                 <p style={{
                                     fontSize: '1.2rem',
                                     margin: 0,
-                                    fontWeight: 'bold' // <-- REQUISITO: Título a negrito
+                                    fontWeight: 'bold' // Título a negrito
                                 }}>
                                     {alert.mensagem}
                                 </p>
 
-                                <small style={{ color: '#ccc' }}> {/* Cor da data atualizada */}
+                                <small style={{ color: '#ccc' }}>
                                     Publicado em: {new Date(alert.createdAt).toLocaleString('pt-PT')}
                                 </small>
 
-                                {/* O botão de Like (reutilizado do PostCard.css) fica igual */}
                                 <div className="post-stats" style={{ marginTop: '1rem' }}>
                                     <button
                                         onClick={() => handleLike(alert._id)}
