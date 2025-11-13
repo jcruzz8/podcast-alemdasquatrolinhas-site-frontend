@@ -1,0 +1,62 @@
+/* A "caixa" do editor */
+.rich-text-editor .ProseMirror {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 0 0 4px 4px;
+    padding: 0.5rem 1rem;
+    min-height: 200px;
+    color: #333;
+}
+.rich-text-editor .ProseMirror:focus {
+    outline: 2px solid #fdd835;
+}
+
+/* A barra de botões */
+.editor-toolbar {
+    background: #333;
+    border: 1px solid #ccc;
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    padding: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+.editor-toolbar button {
+    background: #444;
+    border: 1px solid #aaa;
+    color: #fff;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+.editor-toolbar button:hover {
+    background: #eee;
+}
+.editor-toolbar button.is-active {
+    background: #fdd835; /* O seu amarelo! */
+    color: #333;
+    border-color: #fdd835;
+    font-weight: bold;
+}
+
+/* --- ESTILOS PARA O PÚBLICO (PostCard.jsx) --- */
+/* Isto vai formatar o HTML que o editor criou */
+
+.post-content p {
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+.post-content strong {
+    font-weight: bold;
+}
+.post-content em {
+    font-style: italic;
+}
+.post-content ul,
+.post-content ol {
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+    list-style: revert; /* Usa os pontos/números normais */
+}

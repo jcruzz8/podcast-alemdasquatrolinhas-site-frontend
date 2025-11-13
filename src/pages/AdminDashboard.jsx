@@ -13,6 +13,8 @@ import {fetchMonthlyViews, fetchSiteStats, fetchYearlyViews} from '../services/s
 import RecordStats from '../components/admin/RecordStats';
 import EvolutionChart from '../components/admin/EvolutionChart';
 import ManageUsers from '../components/admin/ManageUsers';
+import RichTextEditor from '../components/common/RichTextEditor';
+import '../components/common/RichTextEditor.css';
 
 // As categorias
 const categories = [
@@ -302,20 +304,10 @@ function AdminDashboard() {
                         </div>
                         <div className="form-group">
                             <label htmlFor="descricao">Descrição</label>
-                            <textarea
-                                id="descricao" value={descricao}
-                                onChange={(e) => setDescricao(e.target.value)}
-                                rows="5" required
+                            <RichTextEditor
+                                content={descricao}
+                                onChange={setDescricao}
                             />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="categoria">Categoria</label>
-                            <select
-                                id="categoria" value={categoria}
-                                onChange={(e) => setCategoria(e.target.value)}
-                            >
-                                {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
-                            </select>
                         </div>
                         <div className="form-group">
                             <label htmlFor="foto">Foto da Notícia</label>

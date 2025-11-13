@@ -7,6 +7,7 @@ import { createComment } from '../../services/commentService';
 import Comment from './Comment';
 
 import './PostCard.css';
+import '../common/RichTextEditor.css';
 
 function PostCard({ post: initialPost, onPostUpdate, isDetailPage = false }) {
     const [post, setPost] = useState(initialPost);
@@ -71,9 +72,10 @@ function PostCard({ post: initialPost, onPostUpdate, isDetailPage = false }) {
 
             <img src={post.foto} alt={post.titulo} className="post-image" />
 
-            <div className="post-content">
-                <p>{post.descricao}</p>
-            </div>
+            <div
+                className="post-content"
+                dangerouslySetInnerHTML={{ __html: post.descricao }}
+            />
 
             <footer className="post-footer">
                 <div className="post-stats">
