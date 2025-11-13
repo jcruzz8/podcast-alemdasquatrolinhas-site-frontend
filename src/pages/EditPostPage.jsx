@@ -3,6 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom'; // <-- 1. Importa 'us
 import { fetchPostById, updatePost } from '../services/postService'; // <-- 2. Importa 'fetchById' e 'updatePost'
 import './AdminDashboard.css'; // Reutiliza o estilo do admin
 import MiniPostCard from '../components/posts/MiniPostCard';
+import RichTextEditor from '../components/common/RichTextEditor';
+import '../components/common/RichTextEditor.css';
 
 // As categorias (copiado do AdminDashboard)
 const categories = [
@@ -150,7 +152,10 @@ function EditPostPage() {
                 </div>
                 <div className="form-group">
                     <label htmlFor="descricao">Descrição</label>
-                    <textarea id="descricao" value={descricao} onChange={(e) => setDescricao(e.target.value)} rows="5" required />
+                    <RichTextEditor
+                        content={descricao}
+                        onChange={setDescricao}
+                    />
                 </div>
                 <div className="form-group">
                     <label htmlFor="categoria">Categoria</label>

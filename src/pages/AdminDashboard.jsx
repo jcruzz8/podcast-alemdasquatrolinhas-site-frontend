@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { fetchSiteSettings, updateSiteSettings } from '../services/settingsService';
 import { createPost } from '../services/postService';
 import { createAlert } from '../services/alertService';
 import { createPoll } from '../services/pollService';
@@ -12,6 +13,8 @@ import {fetchMonthlyViews, fetchSiteStats, fetchYearlyViews} from '../services/s
 import RecordStats from '../components/admin/RecordStats';
 import EvolutionChart from '../components/admin/EvolutionChart';
 import ManageUsers from '../components/admin/ManageUsers';
+import RichTextEditor from '../components/common/RichTextEditor';
+import '../components/common/RichTextEditor.css';
 
 // As categorias
 const categories = [
@@ -50,6 +53,11 @@ function AdminDashboard() {
     const [pollDeadline, setPollDeadline] = useState('');
     const [pollFeedback, setPollFeedback] = useState(null);
     const fileInputRef = useRef(null);
+
+    // Estados para o spotify
+    const [spotifyTitle, setSpotifyTitle] = useState('');
+    const [spotifyIframe, setSpotifyIframe] = useState('');
+    const [spotifyFeedback, setSpotifyFeedback] = useState(null);
 
     // --- O 'useState' das Abas ---
     const [activeTab, setActiveTab] = useState('Criar novo conteúdo');
@@ -99,6 +107,18 @@ function AdminDashboard() {
         setFotoPreview(objectUrl);
         return () => URL.revokeObjectURL(objectUrl);
     }, [foto]);
+
+    useEffect(() => {
+        // Quando o componente carrega, vai buscar as settings atuais
+        const loadSettings = async () => {
+            const settings = await fetchSiteSettings();
+            if (settings) {
+                setSpotifyTitle(settings.spotifyTitle);
+                setSpotifyIframe(settings.spotifyIframe);
+            }
+        };
+        loadSettings();
+    }, []); // Corre só uma vez
 
     // --- As Funções (handleFotoChange, handleSubmit) ---
     const handleFotoChange = (e) => {
@@ -229,6 +249,27 @@ function AdminDashboard() {
         }
     };
 
+    const handleSpotifySubmit = async (e) => {
+        e.preventDefault();
+        setSpotifyFeedback(null);
+
+        if (!spotifyIframe.includes('<iframe')) {
+            setSpotifyFeedback({ tipo: 'erro', texto: 'O código parece inválido. Cole o código <iframe> completo do Spotify.' });
+            return;
+        }
+
+        const updatedSettings = await updateSiteSettings({
+            spotifyTitle: spotifyTitle,
+            spotifyIframe: spotifyIframe,
+        });
+
+        if (updatedSettings) {
+            setSpotifyFeedback({ tipo: 'sucesso', texto: 'Episódio em destaque atualizado!' });
+        } else {
+            setSpotifyFeedback({ tipo: 'erro', texto: 'Erro ao atualizar.' });
+        }
+    };
+
     // ---- O 'return' ----
     return (
         <div className="admin-dashboard">
@@ -263,20 +304,10 @@ function AdminDashboard() {
                         </div>
                         <div className="form-group">
                             <label htmlFor="descricao">Descrição</label>
-                            <textarea
-                                id="descricao" value={descricao}
-                                onChange={(e) => setDescricao(e.target.value)}
-                                rows="5" required
+                            <RichTextEditor
+                                content={descricao}
+                                onChange={setDescricao}
                             />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="categoria">Categoria</label>
-                            <select
-                                id="categoria" value={categoria}
-                                onChange={(e) => setCategoria(e.target.value)}
-                            >
-                                {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
-                            </select>
                         </div>
                         <div className="form-group">
                             <label htmlFor="foto">Foto da Notícia</label>
@@ -419,6 +450,35 @@ function AdminDashboard() {
             {/* 3. Conteúdo da "Aba: Gerir conteúdo" */}
             {activeTab === 'Gerir conteúdo' && (
                 <div>
+
+                    {/* Caixa 0: Gerir Episódios */}
+                    <form onSubmit={handleSpotifySubmit} className="admin-form-container">
+                        <h2>Atualizar Episódio em Destaque</h2>
+
+                        {spotifyFeedback && (
+                            <p className={spotifyFeedback.tipo === 'erro' ? 'admin-error' : 'admin-success'}>
+                                {spotifyFeedback.texto}
+                            </p>
+                        )}
+
+                        <div className="form-group">
+                            <label htmlFor="spotifyTitle">Título (Ex: "Vem ouvir a conversa...")</label>
+                            <input
+                                type="text" id="spotifyTitle" value={spotifyTitle}
+                                onChange={(e) => setSpotifyTitle(e.target.value)} required
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="spotifyIframe">Código `&lt;iframe&gt;` do Spotify</label>
+                            <textarea
+                                id="spotifyIframe" value={spotifyIframe}
+                                onChange={(e) => setSpotifyIframe(e.target.value)}
+                                rows="5" required
+                                placeholder="Cole o código <iframe ...> aqui"
+                            />
+                        </div>
+                        <button type="submit" className="admin-button">Atualizar Episódio</button>
+                    </form>
 
                     {/* Caixa 1: Gerir Publicações */}
                     <div className="admin-form-container">

@@ -44,3 +44,7 @@ body {
 .simple-post-grid .mini-post-image {
     height: 300px !important;
 }
+
+.spotify-embed-container iframe {
+    height: 152px !important;
+}
