@@ -30,7 +30,7 @@ const categories = [
 // A função de validação
 const isValidAspectRatio = (width, height, tolerance = 0.02) => {
     const ratio = width / height;
-    const ratiosPermitidos = [ 1/1, 1.91/1, 4/5, 3/4, 5/4, 4/3, 3/2 ];
+    const ratiosPermitidos = [ 1/1, 1.91/1, 4/5, 3/4, 5/4, 4/3, 3/2, 16/9, 7/5 ];
     return ratiosPermitidos.some(
         allowedRatio => Math.abs(ratio - allowedRatio) < tolerance
     );
@@ -135,7 +135,7 @@ function AdminDashboard() {
                 } else {
                     setMensagem({
                         tipo: 'erro',
-                        texto: `Proporção inválida (${width}x${height}). Aceites: 1:1, 1.91:1, 4:5, 3:4, 5:4, 4:3, 3:2.`
+                        texto: `Proporção inválida (${width}x${height}). Aceites: 1:1, 1.91:1, 4:5, 3:4, 5:4, 4:3, 3:2, 16:9.`
                     });
                     setFoto(null);
                 }
