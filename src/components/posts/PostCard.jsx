@@ -69,7 +69,7 @@ function PostCard({ post: initialPost, onPostUpdate, isDetailPage = false }) {
                 </p>
             </header>
 
-            <img src={`http://localhost:5000${post.foto}`} alt={post.titulo} className="post-image" />
+            <img src={post.foto} alt={post.titulo} className="post-image" />
 
             <div className="post-content">
                 <p>{post.descricao}</p>
