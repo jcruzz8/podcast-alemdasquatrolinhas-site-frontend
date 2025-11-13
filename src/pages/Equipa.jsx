@@ -10,6 +10,11 @@ const coach = {
 
 const titulares = [
     {
+        nome: "Miguel Dias",
+        descricao: "Telefone estragado, ninguém percebe o que diz.",
+        imagem: "/MiguelDias.png"
+    },
+    {
         nome: "Guilherme Silva",
         descricao: "Comentador de rara precisão, raramente acerta uma.",
         imagem: "/GuiBoss.jpg"
