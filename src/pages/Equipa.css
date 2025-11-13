@@ -1,0 +1,69 @@
+.sobre-nos-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.page-title {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    color: #333;
+}
+
+.section-title {
+    font-size: 2rem;
+    color: #333;
+    border-bottom: 3px solid #fdd835; /* Linha amarela */
+    padding-bottom: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.team-grid {
+    display: flex;         /* 1. Muda para Flexbox */
+    flex-wrap: wrap;       /* 2. Permite que os cartões "caiam" para a linha de baixo */
+    justify-content: center; /* 3. Centra os cartões horizontalmente */
+    gap: 2rem;
+}
+
+/* Grelha especial para o "Coach" (para o centrar) */
+.team-grid.single-member {
+    display: block;
+    width: 100%;
+}
+.team-grid.single-member .member-card {
+    max-width: 300px; /* Tamanho do cartão do Coach */
+    margin: 0 auto; /* Centra-o */
+}
+
+
+/* ---- Estilo do Cartão de Membro ---- */
+
+.member-card {
+    background-color: #333;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden; /* Para a imagem arredondada */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    text-align: center;
+    flex-basis: 300px;
+}
+
+.member-image {
+    width: 100%;
+    height: 250px;
+    object-fit: cover; /* Garante que a foto cobre o espaço */
+}
+
+.member-name {
+    font-size: 1.5rem;
+    margin: 1rem 0 0.5rem 0;
+    color: #fff;
+}
+
+.member-description {
+    font-size: 1rem;
+    color: #fdd835;
+    padding: 0 1rem 1.5rem 1rem;
+    margin: 0;
+}

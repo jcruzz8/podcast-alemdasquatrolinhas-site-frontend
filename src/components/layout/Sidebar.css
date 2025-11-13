@@ -1,0 +1,82 @@
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -400px; /* <-- Esta é a linha que a esconde fora do ecrã */
+    width: 300px;
+    height: 100vh;
+    background-color: #ffffff;
+    padding: 2rem;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    transition: left 0.3s ease-in-out;
+    z-index: 1000; /* Prioridade alta */
+}
+
+.sidebar.open {
+    left: 0; /* A classe 'open' é o que a faz aparecer */
+}
+
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0,0,0,0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s;
+    z-index: 999; /* Fica ATRÁS da sidebar */
+}
+
+.sidebar-overlay.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.sidebar-close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #333;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+.sidebar-close-btn:hover {
+    transform: rotate(90deg) scale(1.1); /* Roda 90 graus e aumenta */
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 4rem;
+}
+
+.sidebar li a {
+    display: block;
+    padding: 1rem 0;
+    text-decoration: none;
+    color: #333;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.sidebar li a.active {
+    color: #fdd835;
+}
+
+/* Estilo para o link de Admin na sidebar */
+.sidebar li.admin-sidebar-link a {
+    /* Podes usar o amarelo para o destacar sempre,
+       ou deixar que a classe '.active' o faça */
+    color: #b0000a; /* Ex: Um vermelho escuro */
+    font-weight: bold;
+}
+
+/* Quando o Admin ESTIVER na página de admin */
+.sidebar li.admin-sidebar-link a.active {
+    color: #b0000a; /* O teu amarelo */
+}

@@ -1,0 +1,159 @@
+.admin-form-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+
+    /* ---- CAIXA AMARELA ---- */
+    background-color: #fdd835; /* 1. Fundo amarelo */
+    color: #333; /* 2. Texto escuro para contraste */
+    /* -------------------------------------- */
+
+    border: 1px solid #fbc02d;
+    border-radius: 8px;
+}
+
+.admin-form-container h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #333; /* Título do formulário a preto */
+}
+
+.admin-form-container .form-group {
+    margin-bottom: 1rem;
+}
+
+.admin-form-container .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #333; /* Cor da label preta */
+    font-weight: 500;
+}
+
+/* Inputs, Textareas, Selects */
+.admin-form-container .form-group input,
+.admin-form-container .form-group textarea,
+.admin-form-container .form-group select {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    /* ---- Inputs com fundo branco ---- */
+    background-color: #FFFFFF;
+    color: #333;
+    border: 1px solid #ccc;
+    /* ------------------------------- */
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+/* Inputs de Upload e Data */
+.admin-form-container input[type="file"] {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+}
+
+/* Este é o seletor mágico para o botão */
+.admin-form-container input[type="file"]::file-selector-button {
+    background-color: #333; /* 1. A cor cinza-escura da Navbar */
+    color: #fff; /* Texto branco */
+
+    padding: 0.75rem 1rem;
+    border: none;
+    border-radius: 5px;
+
+    font-weight: bold;
+    font-family: inherit;
+    font-size: 0.9rem;
+
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+/* Efeito 'hover' (passar o rato) */
+.admin-form-container input[type="file"]::file-selector-button:hover {
+    background-color: #555; /* Cinza um pouco mais claro */
+}
+.admin-form-container input[type="datetime-local"] {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    background-color: #FFFFFF;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.admin-form-container input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    filter: invert(0); /* Ícone do calendário normal (preto) */
+}
+
+
+/* Botão (Preto para contrastar com o fundo amarelo) */
+.admin-button {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #FFFFFF; /* Texto branco */
+    background-color: #333; /* Fundo preto */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.admin-button:hover {
+    background-color: #555; /* Preto mais claro no hover */
+}
+
+/* Mensagens de Feedback */
+.admin-error {
+    color: #D8000C; /* Texto vermelho escuro */
+    background-color: #FFD2D2; /* Fundo vermelho claro */
+    border: 2px solid #D8000C; /* Borda vermelha escura */
+    font-weight: bold;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    text-align: center;
+}
+
+.admin-success {
+    color: #2E4730; /* Texto escuro */
+    background-color: #87B344; /* Fundo branco (limpo) */
+    border: 2px solid #2E4730; /* Borda verde (para indicar sucesso) */
+    font-weight: bold;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    text-align: center;
+}
+
+/* ---- Estilo para as Abas do Admin ---- */
+
+/* O contentor das abas */
+.admin-tabs-container {
+    max-width: 800px; /* Alinha com os formulários */
+    margin: 0 auto;
+}
+
+/* Anula o estilo do 'Tabs.css' */
+.admin-tabs-container .tabs-container {
+    border-bottom: 2px solid #555; /* Borda mais escura */
+    justify-content: center;
+}
+
+.admin-tabs-container .tab-button {
+    color: #999; /* Texto da aba inativa (cinza) */
+    font-weight: 500;
+}
+
+.admin-tabs-container .tab-button:hover {
+    color: #fff; /* Texto branco no hover */
+}
+
+.admin-tabs-container .tab-button.active {
+    color: #fdd835; /* Texto amarelo na aba ativa */
+    border-bottom-color: #fdd835; /* Borda amarela */
+}

@@ -1,0 +1,81 @@
+/* ---- O Wrapper (para o 'sticky') ---- */
+/* Este estilo aplica-se ao <header> no App.jsx */
+.sticky-navbar-wrapper {
+    position: sticky;
+    top: 0;
+    z-index: 900;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* ---- A Navbar Principal ---- */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1.5rem; /* Mais fina, como no mockup */
+    background-color: #333; /* Fundo escuro */
+    color: #fff;
+}
+
+/* Divide a navbar em 3 colunas (Esquerda, Centro, Direita) */
+.navbar-left,
+.navbar-center,
+.navbar-right {
+    flex: 1; /* Cada secção ocupa 1/3 do espaço */
+}
+
+.navbar-center {
+    display: flex;
+    justify-content: center; /* Centra o logo */
+}
+
+.navbar-right {
+    display: flex;
+    justify-content: flex-end; /* Alinha os botões à direita */
+    gap: 0.75rem;
+}
+
+/* ---- Componentes da Navbar ---- */
+
+.hamburger-btn {
+    background: none;
+    border: none;
+    color: #fdd835; /* Amarelo */
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out;
+}
+
+.hamburger-btn:hover {
+    transform: rotate(180deg) scale(1.15); /* Aumenta o ícone em 15% */
+}
+
+.logo-image {
+    height: 70px;
+    width: auto;
+    border-radius: 50%;
+}
+
+/* ---- Botões de Auth ---- */
+.nav-button {
+    text-decoration: none;
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-family: inherit;
+}
+
+.nav-button.yellow {
+    background-color: #fdd835;
+    color: #333;
+}
+
+.nav-button.black {
+    background-color: #000;
+    color: #fff;
+    border: 1px solid #555;
+}

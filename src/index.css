@@ -1,0 +1,46 @@
+/* cor de fundo (do mockup) */
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: #f4f4f4; /* Fundo cinza-claro */
+}
+
+/* O estilo para o sino */
+.alert-bell-icon {
+    position: fixed;
+    bottom: 2rem;
+    left: 2rem;
+
+    background-color: #fdd835; /* Amarelo */
+    color: #333; /* Cor do sino preto */
+
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 1.5rem; /* Tamanho do ícone */
+    text-decoration: none;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    z-index: 500;
+}
+
+.alert-bell-icon:hover {
+    /* Aumenta o sino em 10% e roda-o ligeiramente */
+    transform: scale(1.1) rotate(-15deg);
+}
+
+.simple-post-grid {
+    display: grid;
+    /* Tenta criar colunas de 350px, mas deixa-as crescer */
+    /* Isto vai fazer os cartões ficarem grandes */
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1rem;
+}
+
+.simple-post-grid .mini-post-image {
+    height: 300px !important;
+}

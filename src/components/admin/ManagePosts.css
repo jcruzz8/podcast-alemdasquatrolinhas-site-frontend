@@ -1,0 +1,112 @@
+.manage-list-container {
+    width: 100%;
+}
+
+.manage-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    background-color: #fff; /* Fundo branco para a tabela */
+    color: #333;
+    border-radius: 8px;
+    overflow: hidden; /* Para o border-radius funcionar */
+}
+
+.manage-table th,
+.manage-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.manage-table th {
+    background-color: #f4f4f4;
+}
+
+.status-scheduled,
+.status-published {
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.status-scheduled {
+    color: #c25400; /* Laranja */
+    background-color: #fff4e6;
+}
+
+.status-published {
+    color: #2E4730; /* Verde escuro */
+    background-color: #DFF2BF;
+}
+
+.actions-cell {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.edit-btn,
+.delete-btn {
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.edit-btn {
+    background-color: #555;
+    color: #fff;
+}
+
+.delete-btn {
+    background-color: #D8000C; /* Vermelho */
+    color: #fff;
+}
+
+/* Feedback (copiado do AdminDashboard.css) */
+.admin-error {
+    color: #D8000C;
+    background-color: #FFD2D2;
+    border: 2px solid #D8000C;
+    font-weight: bold;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    text-align: center;
+}
+.admin-success {
+    color: #2E4730;
+    background-color: #DFF2BF;
+    border: 2px solid #2E4730;
+    font-weight: bold;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    text-align: center;
+}
+
+.status-eternal,
+.status-expired,
+.status-active {
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.status-eternal {
+    color: #333;
+    background-color: #f0f0f0;
+}
+
+.status-expired {
+    color: #D8000C; /* Vermelho */
+    background-color: #FFD2D2;
+}
+
+.status-active {
+    color: #007bff; /* Azul */
+    background-color: #e6f2ff;
+}

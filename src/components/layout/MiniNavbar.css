@@ -1,0 +1,17 @@
+.mini-navbar {
+    background-color: #fdd835;
+    padding: 0.5rem 2rem;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.mini-navbar .yellow-text {
+    color: #fdd835; /* O amarelo do mockup */
+}
+
+.mini-navbar .grey-text {
+    color: #333333;
+}
+

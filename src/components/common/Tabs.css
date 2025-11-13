@@ -1,0 +1,26 @@
+.tabs-container {
+    display: flex;
+    border-bottom: 2px solid #ddd;
+    margin-bottom: 2rem;
+}
+
+.tab-button {
+    padding: 1rem 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    color: #777;
+    border-bottom: 3px solid transparent; /* Borda "invisível" */
+    margin-bottom: -2px; /* Alinha com a borda do 'tabs-container' */
+}
+
+.tab-button:hover {
+    color: #000;
+}
+
+.tab-button.active {
+    color: #000;
+    border-bottom-color: #333; /* Borda que mostra o 'ativo' */
+}
