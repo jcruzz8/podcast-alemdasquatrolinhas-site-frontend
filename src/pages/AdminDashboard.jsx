@@ -310,6 +310,15 @@ function AdminDashboard() {
                             />
                         </div>
                         <div className="form-group">
+                            <label htmlFor="categoria">Categoria</label>
+                            <select
+                                id="categoria" value={categoria}
+                                onChange={(e) => setCategoria(e.target.value)}
+                            >
+                                {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                            </select>
+                        </div>
+                        <div className="form-group">
                             <label htmlFor="foto">Foto da Notícia</label>
                             <input
                                 type="file" id="foto" accept="image/*"

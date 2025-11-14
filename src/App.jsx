@@ -23,6 +23,7 @@ import PostDetailPage from './pages/PostDetailPage';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminRoute from './components/routing/AdminRoute';
 import EditPostPage from './pages/EditPostPage';
+import CategoryPage from './pages/CategoryPage';
 
 function App() {
     // 5. Estado para controlar a Sidebar
@@ -57,6 +58,7 @@ function App() {
                         <Route path="/login" element={<LoginPage />} />
                         <Route path="/register" element={<RegisterPage />} />
                         <Route path="/noticias" element={<NoticiasPage />} />
+                        <Route path="/noticias/categoria/:categoryName" element={<CategoryPage />} />
                         <Route path="/noticias/:postId" element={<PostDetailPage />} />
                         <Route path="/alertas" element={<AlertasPage />} />
                         <Route path="/sondagens" element={<SondagensPage />} />
