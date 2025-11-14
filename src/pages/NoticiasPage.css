@@ -1,0 +1,22 @@
+/* A nossa nova grelha de 3 colunas */
+.noticias-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 colunas de tamanho igual */
+    gap: 1.5rem; /* Espaço entre os cartões */
+}
+
+/* --- TORNAR RESPONSIVO --- */
+
+/* Para tablets (ex: 2 colunas) */
+@media (max-width: 900px) {
+    .noticias-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Para telemóveis (ex: 1 coluna) */
+@media (max-width: 600px) {
+    .noticias-grid {
+        grid-template-columns: 1fr;
+    }
+}

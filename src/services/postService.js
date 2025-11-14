@@ -116,3 +116,18 @@ export const updatePost = async (postId, postData) => {
         return null;
     }
 };
+
+export const fetchPostsByCategory = async (categoryName) => {
+    try {
+        const response = await api.get(`/posts/categoria/${categoryName}`);
+
+        if (response.data.status === 'success') {
+            return response.data.data.posts; // Retorna o array de posts
+        } else {
+            return [];
+        }
+    } catch (err) {
+        console.error("Erro ao buscar posts por categoria:", err.message);
+        return [];
+    }
+};
