@@ -180,7 +180,13 @@ function HomePage() {
                         </div>
                     </div>
 
-                    <Link to="/alertas" style={{ display: 'block', marginTop: '1rem', textAlign: 'right' }}>
+                    <Link to="/alertas" style={{
+                        display: 'block',
+                        marginTop: '1.5rem',
+                        textAlign: 'right',
+                        fontWeight: 'bold',
+                        color: '#333'
+                    }}>
                         Ver Mais Alertas &rarr;
                     </Link>
                 </section>
@@ -194,7 +200,13 @@ function HomePage() {
                     {/* Usa o novo componente e passa-lhe os posts */}
                     <PostsCarousel posts={recentPosts} />
 
-                    <Link to="/noticias" style={{ display: 'block', marginTop: '1rem', textAlign: 'right' }}>
+                    <Link to="/noticias" style={{
+                        display: 'block',
+                        marginTop: '1.5rem',
+                        textAlign: 'right',
+                        fontWeight: 'bold',
+                        color: '#333'
+                    }}>
                         Ver Mais Notícias &rarr;
                     </Link>
                 </section>
@@ -211,7 +223,13 @@ function HomePage() {
                         onVote={handlePollUpdate}
                     />
 
-                    <Link to="/sondagens" style={{ display: 'block', marginTop: '1rem', textAlign: 'right' }}>
+                    <Link to="/sondagens" style={{
+                        display: 'block',
+                        marginTop: '1.5rem',
+                        textAlign: 'right',
+                        fontWeight: 'bold',
+                        color: '#333'
+                    }}>
                         Ver Mais Sondagens &rarr;
                     </Link>
                 </section>
