@@ -18,7 +18,7 @@ export const fetchSiteStats = async () => {
 };
 
 // ---- Função para ir buscar os dados do Gráfico (Rota de Admin) ----
-export const fetchMonthlyViews = async () => {
+/*export const fetchMonthlyViews = async () => {
     try {
         const response = await api.get('/stats/views-monthly');
         if (response.data.status === 'success') {
@@ -30,7 +30,9 @@ export const fetchMonthlyViews = async () => {
         return [];
     }
 };
+*/
 
+/*
 // ---- Função para ir buscar os dados do Gráfico ANUAL ----
 export const fetchYearlyViews = async () => {
     try {
@@ -41,6 +43,20 @@ export const fetchYearlyViews = async () => {
         return [];
     } catch (err) {
         console.error("Erro ao buscar dados do gráfico anual:", err.message);
+        return [];
+    }
+};
+*/
+
+export const fetchDailyViews = async () => {
+    try {
+        const response = await api.get('/stats/views-daily');
+        if (response.data.status === 'success') {
+            return response.data.data.chartData;
+        }
+        return [];
+    } catch (err) {
+        console.error("Erro ao buscar dados do gráfico diário:", err.message);
         return [];
     }
 };
