@@ -61,16 +61,48 @@ function PostCard({ post: initialPost, onPostUpdate, isDetailPage = false }) {
 
     const userHasLiked = post.likes?.includes(user?._id);
 
+    const displayDate = post.dataAgendada || post.createdAt;
+
+    const formattedDate = new Date(displayDate).toLocaleString('pt-PT', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+
     return (
         <article className={`post-card ${isDetailPage ? 'dark-mode' : ''}`}>
             <header>
                 <h2>{post.titulo}</h2>
+                {post.subtitulo && (
+                    <h3 style={{
+                        fontSize: '1rem',
+                        color: '#D3AF37',
+                        fontWeight: 'normal',
+                        margin: '-0.5rem 0 1rem 0'
+                    }}>
+                        {post.subtitulo}
+                    </h3>
+                )}
                 <p className="post-meta">
-                    Por {post.autor.nome} em {new Date(post.createdAt).toLocaleDateString('pt-PT')}
+                    Por {post.autor.nome} em {formattedDate}
                 </p>
             </header>
 
             <img src={post.foto} alt={post.titulo} className="post-image" />
+
+            {post.fotoFonte && (
+                <p style={{
+                    fontSize: '0.8rem',
+                    color: '#fdd835',
+                    fontStyle: 'italic',
+                    margin: '0.25rem 0 1rem 0',
+                    padding: '0 1.5rem' // (Para alinhar com o padding do post-content)
+                }}>
+                    Fonte: {post.fotoFonte}
+                </p>
+            )}
 
             <div
                 className="post-content"

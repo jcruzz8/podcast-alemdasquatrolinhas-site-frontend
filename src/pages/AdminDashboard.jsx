@@ -39,10 +39,12 @@ const isValidAspectRatio = (width, height, tolerance = 0.02) => {
 function AdminDashboard() {
     // --- Todos os 'useState' ---
     const [titulo, setTitulo] = useState('');
+    const [subtitulo, setSubtitulo] = useState('');
     const [descricao, setDescricao] = useState('');
     const [categoria, setCategoria] = useState(categories[0]);
     const [dataAgendada, setDataAgendada] = useState('');
     const [foto, setFoto] = useState(null);
+    const [fotoFonte, setFotoFonte] = useState('');
     const [fotoPreview, setFotoPreview] = useState(null);
     const [objectPosition, setObjectPosition] = useState('top');
     const [mensagem, setMensagem] = useState(null);
@@ -145,9 +147,11 @@ function AdminDashboard() {
         }
         const formData = new FormData();
         formData.append('titulo', titulo);
+        formData.append('subtitulo', subtitulo);
         formData.append('descricao', descricao);
         formData.append('categoria', categoria);
         formData.append('foto', foto);
+        formData.append('fotoFonte', fotoFonte);
         formData.append('objectPosition', objectPosition);
         if (dataAgendada) {
             formData.append('dataAgendada', dataAgendada);
@@ -156,8 +160,10 @@ function AdminDashboard() {
         if (newPost) {
             setMensagem({ tipo: 'sucesso', texto: 'Post criado com sucesso!' });
             setTitulo('');
+            setSubtitulo('');
             setDescricao('');
             setFoto(null);
+            setFotoFonte('');
             setDataAgendada('');
             if (fileInputRef.current) {
                 fileInputRef.current.value = null;
@@ -294,6 +300,13 @@ function AdminDashboard() {
                             />
                         </div>
                         <div className="form-group">
+                            <label htmlFor="subtitulo">Subtítulo</label>
+                            <input
+                                type="text" id="subtitulo" value={subtitulo}
+                                onChange={(e) => setSubtitulo(e.target.value)}
+                            />
+                        </div>
+                        <div className="form-group">
                             <label htmlFor="descricao">Descrição</label>
                             <RichTextEditor
                                 content={descricao}
@@ -316,6 +329,14 @@ function AdminDashboard() {
                                 onChange={handleFotoChange}
                                 ref={fileInputRef}
                                 required
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="fotoFonte">Fonte da Foto (Opcional)</label>
+                            <input
+                                type="text" id="fotoFonte" value={fotoFonte}
+                                onChange={(e) => setFotoFonte(e.target.value)}
+                                placeholder="Ex: Getty Images"
                             />
                         </div>
                         <div className="form-group">
