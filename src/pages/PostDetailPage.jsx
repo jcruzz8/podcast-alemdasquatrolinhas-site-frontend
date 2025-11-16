@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom'; // 'useParams' para ler o ID do URL
 import { fetchPostById } from '../services/postService';
 import PostCard from '../components/posts/PostCard'; // Vamos reutilizar o nosso PostCard!
+import { useAuth } from '../context/AuthContext';
 
 function PostDetailPage() {
     // 1. O estado para guardar o post que vamos buscar
@@ -10,6 +11,9 @@ function PostDetailPage() {
 
     // 2. 'useParams' dá-nos o ID do post que está no URL
     const { postId } = useParams();
+
+    const { user } = useAuth();
+    const isAdmin = user?.role === 'admin';
 
     // 3. 'useEffect' para ir buscar o post quando a página carrega
     useEffect(() => {
@@ -32,21 +36,44 @@ function PostDetailPage() {
     return (
         <div style={{ padding: '2rem', maxWidth: '1000px', margin: '0 auto' }}>
 
-            <Link
-                to="/noticias"
-                style={{
-                    backgroundColor: '#fdd835',
-                    color: '#333',
-                    padding: '0.6rem 1rem',
-                    borderRadius: '4px',
-                    textDecoration: 'none',
-                    fontWeight: 'bold',
-                    display: 'inline-block',
-                    marginBottom: '2rem'
-                }}
-            >
-                &larr; Voltar às Notícias
-            </Link>
+            <div style={{
+                display: 'flex',
+                justifyContent: 'space-between', // Põe um de cada lado
+                alignItems: 'center',
+                marginBottom: '2rem'
+            }}>
+                {/* O seu botão "Voltar" (fica igual) */}
+                <Link
+                    to="/noticias"
+                    style={{
+                        backgroundColor: '#fdd835',
+                        color: '#333',
+                        padding: '0.6rem 1rem',
+                        borderRadius: '4px',
+                        textDecoration: 'none',
+                        fontWeight: 'bold',
+                    }}
+                >
+                    &larr; Voltar às Notícias
+                </Link>
+
+                {/* 4. O NOVO BOTÃO DE "EDITAR" (SÓ APARECE SE FOR ADMIN) */}
+                {isAdmin && (
+                    <Link
+                        to={`/admin/edit-post/${postId}`} // O link dinâmico para a página de edição
+                        style={{
+                            backgroundColor: '#333', // Cor de "Admin"
+                            color: '#fdd835',
+                            padding: '0.6rem 1rem',
+                            borderRadius: '4px',
+                            textDecoration: 'none',
+                            fontWeight: 'bold',
+                        }}
+                    >
+                        Editar Publicação 📝
+                    </Link>
+                )}
+            </div>
 
             {loading && <p>A carregar notícia...</p>}
 
