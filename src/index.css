@@ -45,6 +45,9 @@ body {
     height: 300px !important;
 }
 
-.spotify-embed-container iframe {
+.spotify-compacta .spotify-embed-container iframe {
+
+    /* A altura compacta oficial do Spotify */
     height: 152px !important;
+
 }
