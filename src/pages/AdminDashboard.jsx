@@ -9,7 +9,7 @@ import ManagePosts from '../components/admin/ManagePosts';
 import ManageAlerts from '../components/admin/ManageAlerts';
 import ManagePolls from '../components/admin/ManagePolls';
 import SiteStats from '../components/admin/SiteStats';
-import {fetchMonthlyViews, fetchSiteStats, fetchYearlyViews} from '../services/statsService';
+import { fetchSiteStats, fetchDailyViews } from '../services/statsService';
 import RecordStats from '../components/admin/RecordStats';
 import EvolutionChart from '../components/admin/EvolutionChart';
 import ManageUsers from '../components/admin/ManageUsers';
@@ -64,8 +64,7 @@ function AdminDashboard() {
     const tabOptions = ['Criar novo conteúdo', 'Gerir conteúdo', 'Gerir Users','Estatísticas do site'];
 
     const [statsData, setStatsData] = useState(null);
-    const [monthlyData, setMonthlyData] = useState(null);
-    const [yearlyData, setYearlyData] = useState(null);
+    const [dailyData, setDailyData] = useState(null);
 
     useEffect(() => {
         // Quando a aba "Estatísticas" for aberta
@@ -78,24 +77,16 @@ function AdminDashboard() {
                 };
                 loadStats();
             }
-            // 2. Carrega os dados do gráfico Mensal
-            if (!monthlyData) {
-                const loadMonthly = async () => {
-                    const data = await fetchMonthlyViews();
-                    setMonthlyData(data);
+            // 2. Carrega os dados do gráfico Diário
+            if (!dailyData) {
+                const loadDaily = async () => {
+                    const data = await fetchDailyViews();
+                    setDailyData(data);
                 };
-                loadMonthly();
-            }
-            // 3. Carrega os dados do gráfico Anual
-            if (!yearlyData) {
-                const loadYearly = async () => {
-                    const data = await fetchYearlyViews();
-                    setYearlyData(data);
-                };
-                loadYearly();
+                loadDaily();
             }
         }
-    }, [activeTab, statsData, monthlyData, yearlyData]); // Vigia a 'activeTab'
+    }, [activeTab, statsData, dailyData]); // Vigia a 'activeTab'
 
     // --- Os teus 'useEffect' ---
     useEffect(() => {
@@ -538,21 +529,11 @@ function AdminDashboard() {
                         <RecordStats stats={statsData} />
                     </div>
 
-                    {/* ... (Caixa 3 e 4: Gráficos) ... */}
-
-                    {/* Caixa 3: Gráfico Mensal (Placeholder) */}
+                    {/* Caixa 3: Gráfico Diário (Placeholder) */}
                     <div className="admin-form-container" style={{ marginTop: '2rem', backgroundColor: '#333' }}>
                         <EvolutionChart
-                            title="Evolução Mensal"
-                            dataFetcher={fetchMonthlyViews} // Passa a FUNÇÃO que ele deve chamar
-                        />
-                    </div>
-
-                    {/* Caixa 4: Gráfico Anual (Placeholder) */}
-                    <div className="admin-form-container" style={{ marginTop: '2rem', backgroundColor: '#333' }}>
-                        <EvolutionChart
-                            title="Evolução Anual"
-                            dataFetcher={fetchYearlyViews} // Passa a FUNÇÃO que ele deve chamar
+                            title="Visualizações Diárias (Últimos 365 Dias)"
+                            dataFetcher={fetchDailyViews} // Passa a NOVA FUNÇÃO
                         />
                     </div>
 
