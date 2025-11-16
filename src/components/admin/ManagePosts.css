@@ -13,14 +13,24 @@
 }
 
 .manage-table th,
-.manage-table td {
+.manage-table td.actions-cell {
     padding: 1rem;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
 }
 
 .manage-table th {
     background-color: #f4f4f4;
+    border-bottom: 1px solid #ddd;
+}
+
+.manage-table tbody tr {
+    border-bottom: 1px solid #ddd;
+}
+
+.manage-table tbody tr:last-child {
+    border-bottom: none;
 }
 
 .status-scheduled,
@@ -44,6 +54,8 @@
 .actions-cell {
     display: flex;
     gap: 0.5rem;
+    justify-content: center;
+    align-items: center;
 }
 
 .edit-btn,
