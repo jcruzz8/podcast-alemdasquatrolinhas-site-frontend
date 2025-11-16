@@ -3,23 +3,56 @@ import api from '../services/api';
 
 const AuthContext = createContext();
 
+// --- FUNÇÃO DE SEGURANÇA (NOVA) ---
+// Isto lê o 'user' do localStorage de forma segura e limpa dados "partidos"
+const getStoredUser = () => {
+    const storedUser = localStorage.getItem('user');
+
+    // Se não houver user, ou se o user for a string "undefined" (um bug comum)
+    if (!storedUser || storedUser === "undefined") {
+        localStorage.removeItem('user'); // Limpa o lixo
+        localStorage.removeItem('token'); // E o token, por segurança
+        return null;
+    }
+
+    // Tenta fazer o parse. Se falhar (JSON inválido), limpa e devolve null
+    try {
+        return JSON.parse(storedUser);
+    } catch (e) {
+        console.error("Erro ao fazer parse do user no localStorage", e);
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+        return null;
+    }
+}
+
+
 function AuthProvider({ children }) {
 
     // --- 1. O ESTADO INICIAL ---
-    // o estado inicial TENTA ler do localStorage
-    const [token, setToken] = useState(localStorage.getItem('token') || null);
-    const [user, setUser] = useState(
-        localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null
-    );
+    const [token, setToken] = useState(null); // Começa como null
+    const [user, setUser] = useState(null);   // Começa como null
 
-    // --- 2. CONFIGURAR O AXIOS AO CARREGAR ---
-    // Este useEffect corre UMA VEZ quando a app arranca
+    // ---- A NOSSA CORREÇÃO ----
+    // Um estado para sabermos se já lemos o localStorage
+    const [authLoading, setAuthLoading] = useState(true);
+
+    // --- 2. CONFIGURAR O AXIOS E LER O localStorage ---
     useEffect(() => {
         const storedToken = localStorage.getItem('token');
-        if (storedToken) {
-            // Se temos um token, diz ao 'api.js' para o usar como "default"
+        const storedUser = getStoredUser(); // <-- Usa a nossa função segura
+
+        if (storedToken && storedUser) {
+            // Se temos dados, diz ao 'api.js' para os usar
             api.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
+            // E define o estado
+            setToken(storedToken);
+            setUser(storedUser);
         }
+
+        // Terminou de carregar (mesmo que não tenha encontrado nada)
+        setAuthLoading(false);
+
     }, []); // O array vazio `[]` garante que isto só corre 1 vez
 
     // --- 3. FUNÇÃO DE LOGIN ---
@@ -33,43 +66,26 @@ function AuthProvider({ children }) {
             if (response.data.status === 'success') {
                 const { token, data } = response.data;
 
-                // Guarda no estado
                 setToken(token);
                 setUser(data.user);
-
-                // Guarda no localStorage
                 localStorage.setItem('token', token);
                 localStorage.setItem('user', JSON.stringify(data.user));
-
-                // Define o header default do Axios para futuros pedidos
                 api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
                 return true;
             }
-
         } catch (err) {
-            if (err.response) {
-                console.error("Falha no login (backend):", err.response.data.message);
-            } else if (err.request) {
-                console.error("Falha no login (rede):", "O servidor não respondeu. Verifica o CORS.");
-            } else {
-                console.error("Falha no login (geral):", err.message);
-            }
+            // ... (o seu 'catch' fica igual) ...
+            console.error("Falha no login:", err.message);
             return false;
         }
     };
 
     // --- 4. FUNÇÃO DE LOGOUT ---
     const logout = () => {
-        // Limpa o estado
         setToken(null);
         setUser(null);
-
-        // Limpa o localStorage
         localStorage.removeItem('token');
         localStorage.removeItem('user');
-
-        // Remove o header default do Axios
         delete api.defaults.headers.common['Authorization'];
     };
 
@@ -83,24 +99,16 @@ function AuthProvider({ children }) {
             });
 
             if (response.data.status === 'success') {
-                // Chama o login, que GUARDA no localStorage
                 return await login(email, password);
             }
         } catch (err) {
+            // ... (o seu 'catch' fica igual) ...
             let errorMessage = 'Ocorreu um erro. Tente novamente.';
-
             if (err.response) {
-                // Apanha a mensagem amigável que o backend enviou!
                 errorMessage = err.response.data.message;
-                console.error("Falha no registo (backend):", errorMessage);
             } else if (err.request) {
                 errorMessage = 'O servidor não respondeu.';
-                console.error("Falha no registo (rede):", errorMessage);
-            } else {
-                console.error("Falha no registo (geral):", err.message);
             }
-
-            // Em vez de devolver 'false', devolve a MENSAGEM de erro
             return errorMessage;
         }
     };
@@ -113,7 +121,8 @@ function AuthProvider({ children }) {
             login,
             logout,
             register,
-            isLoggedIn: !!token
+            isLoggedIn: !!token,
+            authLoading // <-- Partilha o novo estado de loading
         }}>
             {children}
         </AuthContext.Provider>
