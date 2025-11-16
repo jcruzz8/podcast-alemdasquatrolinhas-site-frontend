@@ -69,19 +69,20 @@ export const createPost = async (postData) => {
     }
 };
 
-export const fetchAdminPosts = async () => {
+export const fetchAdminPosts = async (page = 1) => { // <-- 1. Aceita a 'page'
     try {
-        // O token de Admin é enviado automaticamente pela 'api'
-        const response = await api.get('/posts/admin-all');
+        // 2. Envia a 'page' como um "query parameter"
+        const response = await api.get(`/posts/admin-all?page=${page}`);
 
         if (response.data.status === 'success') {
-            return response.data.data.posts; // Retorna o array de posts
+            // 3. Retorna o OBJETO completo (posts E totalPages)
+            return response.data.data;
         } else {
-            return [];
+            return { posts: [], totalPages: 0 }; // Devolve um objeto vazio
         }
     } catch (err) {
         console.error("Erro ao buscar posts de admin:", err.message);
-        return [];
+        return { posts: [], totalPages: 0 };
     }
 };
 
