@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom'; // 'useParams' para ler o ID do URL
-import { fetchPostById } from '../services/postService';
+import { useParams, Link, useNavigate } from 'react-router-dom'; // 'useParams' para ler o ID do URL
+import { fetchPostById, deletePost } from '../services/postService';
 import PostCard from '../components/posts/PostCard'; // Vamos reutilizar o nosso PostCard!
 import { useAuth } from '../context/AuthContext';
+import '../components/admin/ManagePosts.css';
 
 function PostDetailPage() {
     // 1. O estado para guardar o post que vamos buscar
@@ -11,6 +12,7 @@ function PostDetailPage() {
 
     // 2. 'useParams' dá-nos o ID do post que está no URL
     const { postId } = useParams();
+    const navigate = useNavigate();
 
     const { user } = useAuth();
     const isAdmin = user?.role === 'admin';
@@ -33,6 +35,18 @@ function PostDetailPage() {
         setPost(updatedPost);
     };
 
+    const handleDelete = async () => {
+        if (window.confirm("Tem a certeza que quer apagar este post? Esta ação é irreversível e apagará todos os comentários associados.")) {
+            const success = await deletePost(postId);
+            if (success) {
+                alert('Post apagado com sucesso.');
+                navigate('/noticias'); // Envia o admin de volta para a lista
+            } else {
+                alert('Erro ao apagar o post.');
+            }
+        }
+    };
+
     return (
         <div style={{ padding: '2rem', maxWidth: '1000px', margin: '0 auto' }}>
 
@@ -42,7 +56,7 @@ function PostDetailPage() {
                 alignItems: 'center',
                 marginBottom: '2rem'
             }}>
-                {/* O seu botão "Voltar" (fica igual) */}
+                {/* Botão "Voltar" (para toda a gente) */}
                 <Link
                     to="/noticias"
                     style={{
@@ -57,21 +71,24 @@ function PostDetailPage() {
                     &larr; Voltar às Notícias
                 </Link>
 
-                {/* 4. O NOVO BOTÃO DE "EDITAR" (SÓ APARECE SE FOR ADMIN) */}
+                {/* Botões de Admin (só para admins) */}
                 {isAdmin && (
-                    <Link
-                        to={`/admin/edit-post/${postId}`} // O link dinâmico para a página de edição
-                        style={{
-                            backgroundColor: '#333', // Cor de "Admin"
-                            color: '#fdd835',
-                            padding: '0.6rem 1rem',
-                            borderRadius: '4px',
-                            textDecoration: 'none',
-                            fontWeight: 'bold',
-                        }}
-                    >
-                        Editar Publicação 📝
-                    </Link>
+                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        {/* O seu botão de Editar (agora usa className) */}
+                        <Link
+                            to={`/admin/edit-post/${postId}`}
+                            className="edit-btn" // Reutiliza o estilo de admin
+                        >
+                            Editar Publicação 📝
+                        </Link>
+                        {/* O NOVO botão de Apagar */}
+                        <button
+                            onClick={handleDelete}
+                            className="delete-btn" // Reutiliza o estilo de admin
+                        >
+                            Apagar 🗑️
+                        </button>
+                    </div>
                 )}
             </div>
 
