@@ -33,14 +33,13 @@ function AuthProvider({ children }) {
     const [token, setToken] = useState(null); // Começa como null
     const [user, setUser] = useState(null);   // Começa como null
 
-    // ---- A NOSSA CORREÇÃO ----
     // Um estado para sabermos se já lemos o localStorage
     const [authLoading, setAuthLoading] = useState(true);
 
     // --- 2. CONFIGURAR O AXIOS E LER O localStorage ---
     useEffect(() => {
         const storedToken = localStorage.getItem('token');
-        const storedUser = getStoredUser(); // <-- Usa a nossa função segura
+        const storedUser = getStoredUser();
 
         if (storedToken && storedUser) {
             // Se temos dados, diz ao 'api.js' para os usar
@@ -74,7 +73,6 @@ function AuthProvider({ children }) {
                 return true;
             }
         } catch (err) {
-            // ... (o seu 'catch' fica igual) ...
             console.error("Falha no login:", err.message);
             return false;
         }
@@ -102,7 +100,6 @@ function AuthProvider({ children }) {
                 return await login(email, password);
             }
         } catch (err) {
-            // ... (o seu 'catch' fica igual) ...
             let errorMessage = 'Ocorreu um erro. Tente novamente.';
             if (err.response) {
                 errorMessage = err.response.data.message;
@@ -122,7 +119,7 @@ function AuthProvider({ children }) {
             logout,
             register,
             isLoggedIn: !!token,
-            authLoading // <-- Partilha o novo estado de loading
+            authLoading
         }}>
             {children}
         </AuthContext.Provider>

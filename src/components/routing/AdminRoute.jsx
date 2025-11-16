@@ -24,8 +24,6 @@ function AdminRoute() {
     // ---- A NOSSA CORREÇÃO ----
     // 3. Se o "Cérebro" ainda está a carregar do localStorage, ESPERA
     if (authLoading) {
-        // Mostra uma mensagem de "a carregar" em vez de um ecrã branco
-        // Pode estilizar isto ou usar um componente "Spinner" se tiver
         return <p style={{ textAlign: 'center', marginTop: '2rem' }}>A verificar autenticação...</p>;
     }
 
