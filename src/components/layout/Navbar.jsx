@@ -1,15 +1,15 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { FaBars } from 'react-icons/fa'; // 1. Importa o ícone "Hamburger"
 import './Navbar.css';
 
 // A Navbar agora recebe a função 'onOpenSidebar' do App.jsx
-function Navbar({ onOpenSidebar }) {
+const Navbar = forwardRef(({ onOpenSidebar }, ref) => {
     const { isLoggedIn, logout } = useAuth();
 
     return (
-        <nav className="navbar">
+        <nav ref ={ref} className="navbar">
 
             {/* 1. LADO ESQUERDO: O Hamburger */}
             <div className="navbar-left">
@@ -46,6 +46,6 @@ function Navbar({ onOpenSidebar }) {
             </div>
         </nav>
     );
-}
+});
 
 export default Navbar;

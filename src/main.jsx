@@ -5,6 +5,7 @@ import App from './App.jsx'
 
 // 1. Importa o nosso novo Provider
 import { AuthProvider } from './context/AuthContext';
+import { AudioProvider } from './context/AudioContext';
 
 import './index.css';
 import "slick-carousel/slick/slick.css";
@@ -14,7 +15,9 @@ createRoot(document.getElementById('root')).render(
     <StrictMode>
         <BrowserRouter>
             <AuthProvider> {/* 2. "Embrulha" a App */}
-                <App />
+                <AudioProvider>
+                    <App />
+                </AudioProvider>
             </AuthProvider>
         </BrowserRouter>
     </StrictMode>,

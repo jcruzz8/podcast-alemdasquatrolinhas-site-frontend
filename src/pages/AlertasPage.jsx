@@ -1,34 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { fetchPublicAlerts, toggleAlertLike } from '../services/alertService';
 import { useAuth } from '../context/AuthContext';
-import { fetchSiteSettings } from '../services/settingsService';
-import { toggleSpotifyLike } from '../services/settingsService';
+import { useAudio } from '../context/AudioContext'; // Importa o cérebro
+import SpotifyEmbed from '../components/common/SpotifyEmbed';
 import '../components/posts/PostCard.css'; // reusa o CSS do botão de like
 
 function AlertasPage() {
     // 1. Onde vamos guardar os alertas
-    const [alerts, setAlerts] = useState([]);
-    const [settings, setSettings] = useState(null);
-    const [loading, setLoading] = useState(true);
-
+    const { playerContent, playerLikes, handleLike: handleSpotifyLike, isLoading: isAudioLoading } = useAudio();
     const { isLoggedIn, user } = useAuth();
+    const [alerts, setAlerts] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     // 2. O 'useEffect' corre quando a página carrega
     useEffect(() => {
         const getPageData = async () => {
             setLoading(true);
             try {
-                // Pedimos os dois em "paralelo"
                 const alertsPromise = fetchPublicAlerts();
-                const settingsPromise = fetchSiteSettings();
 
-                // Esperamos que ambos terminem
+                // Esperamos que termine
                 const alertsData = await alertsPromise;
-                const settingsData = await settingsPromise;
 
                 // Guardamos os dados (com um "fallback" para os alertas)
                 setAlerts(alertsData || []);
-                setSettings(settingsData);
 
             } catch (error) {
                 // Se algo falhar, registamos o erro
@@ -58,16 +53,8 @@ function AlertasPage() {
         }
     };
 
-    const handleSpotifyLike = async () => {
-        if (!isLoggedIn) return;
-
-        const updatedSettings = await toggleSpotifyLike();
-
-        if (updatedSettings) {
-            setSettings(updatedSettings);
-        }
-    };
-
+    const pageIsLoading = loading || isAudioLoading;
+    const userHasLikedSpotify = playerLikes.includes(user?._id);
     // 3. A estrutura (JSX) da página
     return (
         <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
@@ -75,19 +62,21 @@ function AlertasPage() {
 
             {loading && <p>A carregar alertas...</p>}
 
-            {!loading && settings && settings.spotifyIframe && (
+            {/* ---- 4. Bloco do Spotify (ESTÁTICO) ---- */}
+            {!pageIsLoading && playerContent && playerContent.iframe && (
                 <section style={{ marginBottom: '2rem', textAlign: 'center' }}>
-                    <h2 style={{ fontSize: '1.5rem', color: '#000' }}>{settings.spotifyTitle}</h2>
-                    <div
-                        dangerouslySetInnerHTML={{ __html: settings.spotifyIframe }}
-                    />
+
+                    <h2 style={{ fontSize: '1.5rem', color: '#000' }}>{playerContent.title}</h2>
+
+                    <SpotifyEmbed iframe={playerContent.iframe} />
+
                     <div className="post-stats" style={{ marginTop: '1rem', textAlign: 'left', paddingLeft: '1rem' }}>
                         <button
                             onClick={handleSpotifyLike}
                             disabled={!isLoggedIn}
-                            className={`like-button ${settings.likes?.includes(user?._id) ? 'liked' : ''} ${!isLoggedIn ? 'disabled' : ''}`}
+                            className={`like-button ${userHasLikedSpotify ? 'liked' : ''} ${!isLoggedIn ? 'disabled' : ''}`}
                         >
-                            <span></span> {settings.likes?.length || 0} Likes
+                            <span></span> {playerLikes.length || 0} Likes
                         </button>
                     </div>
                 </section>

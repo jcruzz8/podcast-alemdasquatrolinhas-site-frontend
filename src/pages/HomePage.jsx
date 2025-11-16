@@ -9,18 +9,19 @@ import PostsCarousel from '../components/posts/PostsCarousel';
 import SondagemCard from '../components/common/SondagemCard';
 import { useAuth } from '../context/AuthContext'; // Para saber quem está logado
 import { toggleAlertLike } from '../services/alertService'; // A função de dar like
-import { fetchSiteSettings } from '../services/settingsService';
-import { toggleSpotifyLike } from '../services/settingsService';
-import '../components/posts/PostCard.css'; // Para o estilo do botão de like
+import { useAudio } from '../context/AudioContext'; // 1. Importa o "Cérebro"
+import SpotifyEmbed from '../components/common/SpotifyEmbed'; // 2. Importa o "Escudo"
+import '../components/posts/PostCard.css';
 
 function HomePage() {
     // 2. Estados para guardar os dados
+    const { playerContent, playerLikes, handleLike, isLoading: isAudioLoading } = useAudio();
+    const { isLoggedIn, user } = useAuth();
+
     const [latestAlert, setLatestAlert] = useState(null);
     const [recentPosts, setRecentPosts] = useState([]);
     const [activePoll, setActivePoll] = useState(null);
     const [loading, setLoading] = useState(true);
-    const { isLoggedIn, user } = useAuth(); // Acede aos dados de login
-    const [settings, setSettings] = useState(null);
 
     // 3. 'useEffect' para carregar tudo quando a página abre
     useEffect(() => {
@@ -30,13 +31,11 @@ function HomePage() {
                 const [
                     alertsResult,
                     postsResult,
-                    pollsResult,
-                    settingsResult
+                    pollsResult
                 ] = await Promise.allSettled([
                     fetchPublicAlerts(),
                     fetchPublicPosts(),
-                    fetchPublicPolls(),
-                    fetchSiteSettings()
+                    fetchPublicPolls()
                 ]);
 
                 // --- Lógica de Filtragem ---
@@ -69,13 +68,6 @@ function HomePage() {
                     console.error("Falha ao carregar Sondagens:", pollsResult.reason);
                 }
 
-                // Settings do Spotify:
-                if (settingsResult.status === 'fulfilled') {
-                    setSettings(settingsResult.value);
-                } else if (settingsResult.status === 'rejected') {
-                    console.error("Falha ao carregar Settings:", settingsResult.reason);
-                }
-
             } catch (error) {
                 // Este 'catch' é para erros inesperados
                 console.error("Erro geral ao carregar Homepage:", error);
@@ -102,16 +94,8 @@ function HomePage() {
         }
     };
 
-    const handleSpotifyLike = async () => {
-        if (!isLoggedIn) return; // Segurança
-
-        const updatedSettings = await toggleSpotifyLike();
-
-        if (updatedSettings) {
-            // Atualiza o estado das settings instantaneamente
-            setSettings(updatedSettings);
-        }
-    };
+    const pageIsLoading = loading || isAudioLoading;
+    const userHasLikedSpotify = playerLikes.includes(user?._id);
 
     // 5. O "esqueleto" da tua nova Homepage
     return (
@@ -119,27 +103,27 @@ function HomePage() {
 
             {loading && <p>A carregar...</p>}
 
-            {/* ---- Bloco do Spotify ---- */}
-            {!loading && settings && settings.spotifyIframe && (
-                <section style={{ marginBottom: '2rem', textAlign: 'center' }}>
+            {/* ---- 4. Bloco do Spotify (ESTÁTICO) ---- */}
+            {!pageIsLoading && playerContent && playerContent.iframe && (
+                <section
+                    className="spotify-compacta" // <-- ADICIONE ESTA LINHA
+                    style={{ marginBottom: '2rem', textAlign: 'center' }}
+                >
 
-                    <h2 style={{ fontSize: '1.5rem', color: '#000' }}>{settings.spotifyTitle}</h2>
+                    {/* Título (do Cérebro) */}
+                    <h2 style={{ fontSize: '1.5rem', color: '#000' }}>{playerContent.title}</h2>
 
-                    {/* AVISO DE SEGURANÇA:
-                      Usamos 'dangerouslySetInnerHTML' porque o Spotify nos dá HTML (um <iframe>).
-                      Isto é seguro porque SÓ NÓS (Admins) é que controlamos este código.
-                    */}
-                    <div
-                        dangerouslySetInnerHTML={{ __html: settings.spotifyIframe }}
-                        className="spotify-embed-container" // Pode usar esta classe para estilizar (ex: margin-top)
-                    />
+                    {/* O "Escudo" (do Cérebro) - NÃO VAI PARAR */}
+                    <SpotifyEmbed iframe={playerContent.iframe} />
+
+                    {/* O Botão de Like (do Cérebro) - VAI REDESENHAR */}
                     <div className="post-stats" style={{ marginTop: '1rem', textAlign: 'left', paddingLeft: '1rem' }}>
                         <button
-                            onClick={handleSpotifyLike}
+                            onClick={handleLike} // Chama a função do "Cérebro"
                             disabled={!isLoggedIn}
-                            className={`like-button ${settings.likes?.includes(user?._id) ? 'liked' : ''} ${!isLoggedIn ? 'disabled' : ''}`}
+                            className={`like-button ${userHasLikedSpotify ? 'liked' : ''} ${!isLoggedIn ? 'disabled' : ''}`}
                         >
-                            <span></span> {settings.likes?.length || 0} Likes
+                            <span></span> {playerLikes.length || 0} Likes
                         </button>
                     </div>
                 </section>
